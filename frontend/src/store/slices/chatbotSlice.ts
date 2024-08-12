@@ -5,6 +5,7 @@ export interface ChatbotState {
   messages: { text: string; sender: 'user' | 'bot' }[];
   isLoading: boolean;
   error: string | null;
+  response: string | null;  // Added response property
 }
 
 export const sendMessage = createAsyncThunk(
@@ -19,6 +20,7 @@ const initialState: ChatbotState = {
   messages: [],
   isLoading: false,
   error: null,
+  response: null,  // Initialize response
 };
 
 const chatbotSlice = createSlice({
@@ -32,6 +34,7 @@ const chatbotSlice = createSlice({
       })
       .addCase(sendMessage.fulfilled, (state, action: PayloadAction<string>) => {
         state.messages.push({ text: action.payload, sender: 'bot' });
+        state.response = action.payload;  // Set response on success
         state.isLoading = false;
       })
       .addCase(sendMessage.rejected, (state, action) => {

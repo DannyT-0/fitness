@@ -62,7 +62,7 @@ const Response = styled.div`
 const Chatbot: React.FC = () => {
   const [message, setMessage] = useState('');
   const dispatch = useAppDispatch();
-  const response = useSelector((state: RootState) => state.chatbot.response);
+  const response = useSelector((state: RootState) => state.chatbot.response)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
