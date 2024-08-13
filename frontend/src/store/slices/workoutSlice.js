@@ -12,18 +12,18 @@ const workoutSlice = createSlice({
     name: 'workouts',
     initialState: {
         workouts: [],
-        loading: false,
+        status: 'idle',
         error: null,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchWorkouts.pending, (state) => {
-            state.loading = true;
+            state.status = 'idle';
         })
             .addCase(fetchWorkouts.fulfilled, (state, action) => {
             state.workouts = action.payload;
-            state.loading = false;
+            state.status = 'idle';
         })
             .addCase(addWorkout.fulfilled, (state, action) => {
             state.workouts.push(action.payload);

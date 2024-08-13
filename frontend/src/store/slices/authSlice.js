@@ -1,8 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as api from '../../services/api';
 export const login = createAsyncThunk('auth/login', async (credentials) => {
-    const response = await api.login(credentials);
-    return response.data;
+    if (credentials.token) {
+        const response = await api.validateToken();
+        return response.data;
+    }
+    else if (credentials.username && credentials.password) {
+        const response = await api.login({ username: credentials.username, password: credentials.password });
+        return response.data;
+    }
+    else {
+        throw new Error('Invalid credentials');
+    }
 });
 export const register = createAsyncThunk('auth/register', async (userData) => {
     const response = await api.register(userData);
@@ -35,7 +44,7 @@ const authSlice = createSlice({
         })
             .addCase(register.fulfilled, (state, action) => {
             state.user = action.payload.user;
-            // You might want to set isAuthenticated to true here, depending on your app's logic
+            // You might want to set isAuthenticated to true here
         });
     },
 });

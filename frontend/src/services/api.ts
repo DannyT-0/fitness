@@ -7,6 +7,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -22,6 +23,9 @@ export const login = (credentials: { username: string; password: string }) =>
 
 export const register = (userData: { username: string; email: string; password: string }) =>
   api.post('/register', userData);
+
+export const validateToken = () =>
+  api.post('/validate-token');
 
 export const getWorkouts = () => api.get('/workouts');
 

@@ -5,6 +5,7 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true,
 });
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
@@ -15,6 +16,7 @@ api.interceptors.request.use((config) => {
 });
 export const login = (credentials) => api.post('/login', credentials);
 export const register = (userData) => api.post('/register', userData);
+export const validateToken = () => api.post('/validate-token');
 export const getWorkouts = () => api.get('/workouts');
 export const addWorkout = (workoutData) => api.post('/workouts', workoutData);
 export const sendChatbotMessage = (message) => api.post('/chatbot', { message });

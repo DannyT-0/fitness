@@ -6,13 +6,13 @@ import { RootState } from '../store';
 import { AppDispatch } from '../store';
 
 export interface Workout {
-    id: string;
-    type: string;
-    duration: number;
-    calories_burned: number;
-    date: string; 
-  }
-  
+  id: string;
+  type: string;
+  duration: number;
+  calories_burned: number;
+  date: string; 
+  bodyPart: string;
+}
 
 const WorkoutListContainer = styled.div`
   max-width: 600px;
@@ -37,27 +37,55 @@ const WorkoutInfo = styled.p`
   margin: 5px 0;
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  margin-top: 20px;
+`;
+
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
 const WorkoutList: React.FC = () => {
   const dispatch = useAppDispatch();
   const workouts = useSelector((state: RootState) => state.workouts.workouts);
+  const status = useSelector((state: RootState) => state.workouts.status);
+  const error = useSelector((state: RootState) => state.workouts.error);
 
   useEffect(() => {
-    dispatch(fetchWorkouts());
-  }, [dispatch]);
+    if (status === 'idle') {
+      dispatch(fetchWorkouts());
+    }
+  }, [status, dispatch]);
+
+  if (status === 'loading') {
+    return <LoadingMessage>Loading workouts...</LoadingMessage>;
+  }
+
+  if (status === 'failed') {
+    return <ErrorMessage>Error: {error}</ErrorMessage>;
+  }
 
   return (
     <WorkoutListContainer>
       <Title>Your Workouts</Title>
-      {workouts.map((workout: Workout) => (
-        <WorkoutItem key={workout.id}>
-          <WorkoutInfo>Type: {workout.type}</WorkoutInfo>
-          <WorkoutInfo>Duration: {workout.duration} minutes</WorkoutInfo>
-          <WorkoutInfo>Calories Burned: {workout.calories_burned}</WorkoutInfo>
-          <WorkoutInfo>Date: {new Date(workout.date).toLocaleDateString()}</WorkoutInfo>
-        </WorkoutItem>
-      ))}
+      {workouts.length === 0 ? (
+        <p>No workouts found. Start by adding a workout!</p>
+      ) : (
+        workouts.map((workout: Workout) => (
+          <WorkoutItem key={workout.id}>
+            <WorkoutInfo>Date: {new Date(workout.date).toLocaleDateString()}</WorkoutInfo>
+            <WorkoutInfo>Body Part: {workout.bodyPart}</WorkoutInfo>
+            <WorkoutInfo>Type: {workout.type}</WorkoutInfo>
+            <WorkoutInfo>Duration: {workout.duration} minutes</WorkoutInfo>
+            <WorkoutInfo>Calories Burned: {workout.calories_burned}</WorkoutInfo>
+          </WorkoutItem>
+        ))
+      )}
     </WorkoutListContainer>
   );
 };

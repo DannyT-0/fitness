@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
 import { login } from '../store/slices/authSlice';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -47,6 +48,20 @@ const Button = styled.button`
   }
 `;
 
+const RegisterLink = styled.div`
+  text-align: center;
+  margin-top: 10px;
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -75,6 +90,9 @@ const Login: React.FC = () => {
         />
         <Button type="submit">Login</Button>
       </Form>
+      <RegisterLink>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </RegisterLink>
     </LoginContainer>
   );
 };

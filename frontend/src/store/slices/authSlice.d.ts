@@ -8,8 +8,9 @@ export interface AuthState {
     error: string | null;
 }
 export declare const login: import("@reduxjs/toolkit").AsyncThunk<any, {
-    username: string;
-    password: string;
+    username?: string | undefined;
+    password?: string | undefined;
+    token?: string | undefined;
 }, {
     state?: unknown;
     dispatch?: import("redux-thunk").ThunkDispatch<unknown, unknown, import("redux").UnknownAction> | undefined;

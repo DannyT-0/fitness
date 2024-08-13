@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { register } from '../store/slices/authSlice';
 import styled from 'styled-components';
 import { AppDispatch } from '../store';
+import { Link } from 'react-router-dom';
 // import { useAppDispatch } from './Login';
 
 
@@ -49,6 +50,20 @@ const Button = styled.button`
   }
 `;
 
+const LoginLink = styled.div`
+  text-align: center;
+  margin-top: 10px;
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
 const Register: React.FC = () => {
@@ -86,6 +101,9 @@ const Register: React.FC = () => {
         />
         <Button type="submit">Register</Button>
       </Form>
+      <LoginLink>
+        Already have an account? <Link to="/">Login here</Link>
+      </LoginLink>
     </RegisterContainer>
   );
 };

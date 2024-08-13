@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from app.models.workout import Workout
 from app import db
 
@@ -8,15 +8,21 @@ bp = Blueprint('workouts', __name__)
 @bp.route('/workouts', methods=['GET'])
 @jwt_required()
 def get_workouts():
-    user_id = get_jwt_identity()
-    workouts = Workout.query.filter_by(user_id=user_id).all()
-    return jsonify([{
-        'id': w.id,
-        'type': w.type,
-        'duration': w.duration,
-        'calories_burned': w.calories_burned,
-        'date': w.date.isoformat()
-    } for w in workouts]), 200
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        workouts = Workout.query.filter_by(user_id=user_id).all()
+        return jsonify([{
+            'id': w.id,
+            'type': w.type,
+            'duration': w.duration,
+            'calories_burned': w.calories_burned,
+            'date': w.date.isoformat()
+        } for w in workouts]), 200
+    except Exception as e:
+        print(f"Error in get_workouts: {str(e)}")
+        return jsonify({"msg": "Error fetching workouts"}), 500
+
 
 @bp.route('/workouts', methods=['POST'])
 @jwt_required()

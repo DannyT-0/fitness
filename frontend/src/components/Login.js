@@ -2,6 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../store/slices/authSlice';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 const useAppDispatch = () => useDispatch();
 const LoginContainer = styled.div `
@@ -40,6 +41,19 @@ const Button = styled.button `
     background-color: #218838;
   }
 `;
+const RegisterLink = styled.div `
+  text-align: center;
+  margin-top: 10px;
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -48,6 +62,6 @@ const Login = () => {
         e.preventDefault();
         dispatch(login({ username, password }));
     };
-    return (_jsxs(LoginContainer, { children: [_jsx(Title, { children: "Login" }), _jsxs(Form, { onSubmit: handleSubmit, children: [_jsx(Input, { type: "text", value: username, onChange: (e) => setUsername(e.target.value), placeholder: "Username" }), _jsx(Input, { type: "password", value: password, onChange: (e) => setPassword(e.target.value), placeholder: "Password" }), _jsx(Button, { type: "submit", children: "Login" })] })] }));
+    return (_jsxs(LoginContainer, { children: [_jsx(Title, { children: "Login" }), _jsxs(Form, { onSubmit: handleSubmit, children: [_jsx(Input, { type: "text", value: username, onChange: (e) => setUsername(e.target.value), placeholder: "Username" }), _jsx(Input, { type: "password", value: password, onChange: (e) => setPassword(e.target.value), placeholder: "Password" }), _jsx(Button, { type: "submit", children: "Login" })] }), _jsxs(RegisterLink, { children: ["Don't have an account? ", _jsx(Link, { to: "/register", children: "Register here" })] })] }));
 };
 export default Login;

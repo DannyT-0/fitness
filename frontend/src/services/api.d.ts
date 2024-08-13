@@ -8,6 +8,7 @@ export declare const register: (userData: {
     email: string;
     password: string;
 }) => Promise<import("axios").AxiosResponse<any, any>>;
+export declare const validateToken: () => Promise<import("axios").AxiosResponse<any, any>>;
 export declare const getWorkouts: () => Promise<import("axios").AxiosResponse<any, any>>;
 export declare const addWorkout: (workoutData: {
     type: string;

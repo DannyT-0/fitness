@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { register } from '../store/slices/authSlice';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 // import { useAppDispatch } from './Login';
 const RegisterContainer = styled.div `
   max-width: 400px;
@@ -40,6 +41,19 @@ const Button = styled.button `
     background-color: #138496;
   }
 `;
+const LoginLink = styled.div `
+  text-align: center;
+  margin-top: 10px;
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
 const useAppDispatch = () => useDispatch();
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -50,6 +64,6 @@ const Register = () => {
         e.preventDefault();
         dispatch(register({ username, email, password }));
     };
-    return (_jsxs(RegisterContainer, { children: [_jsx(Title, { children: "Register" }), _jsxs(Form, { onSubmit: handleSubmit, children: [_jsx(Input, { type: "text", value: username, onChange: (e) => setUsername(e.target.value), placeholder: "Username" }), _jsx(Input, { type: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "Email" }), _jsx(Input, { type: "password", value: password, onChange: (e) => setPassword(e.target.value), placeholder: "Password" }), _jsx(Button, { type: "submit", children: "Register" })] })] }));
+    return (_jsxs(RegisterContainer, { children: [_jsx(Title, { children: "Register" }), _jsxs(Form, { onSubmit: handleSubmit, children: [_jsx(Input, { type: "text", value: username, onChange: (e) => setUsername(e.target.value), placeholder: "Username" }), _jsx(Input, { type: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "Email" }), _jsx(Input, { type: "password", value: password, onChange: (e) => setPassword(e.target.value), placeholder: "Password" }), _jsx(Button, { type: "submit", children: "Register" })] }), _jsxs(LoginLink, { children: ["Already have an account? ", _jsx(Link, { to: "/", children: "Login here" })] })] }));
 };
 export default Register;

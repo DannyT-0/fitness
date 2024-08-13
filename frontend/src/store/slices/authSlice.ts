@@ -10,10 +10,17 @@ export interface AuthState {
 
 export const login = createAsyncThunk(
   'auth/login',
-  async (credentials: { username: string; password: string }) => {
-    const response = await api.login(credentials);
+  async (credentials: { username?: string; password?: string; token?: string }) => {
+    if (credentials.token) {
+    const response = await api.validateToken();
     return response.data;
+  } else if (credentials.username && credentials.password) {
+    const response = await api.login({ username: credentials.username, password: credentials.password });
+    return response.data;
+  } else{
+    throw new Error('Invalid credentials');
   }
+}
 );
 
 export const register = createAsyncThunk(
@@ -52,7 +59,7 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action: PayloadAction<{ user: { username: string; email: string } }>) => {
         state.user = action.payload.user;
-        // You might want to set isAuthenticated to true here, depending on your app's logic
+        // You might want to set isAuthenticated to true here
       });
   },
 });

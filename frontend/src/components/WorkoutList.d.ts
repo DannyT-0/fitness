@@ -5,6 +5,7 @@ export interface Workout {
     duration: number;
     calories_burned: number;
     date: string;
+    bodyPart: string;
 }
 declare const WorkoutList: React.FC;
 export default WorkoutList;
