@@ -32,5 +32,15 @@ export declare const addWorkout: import("@reduxjs/toolkit").AsyncThunk<Workout, 
     fulfilledMeta?: unknown;
     rejectedMeta?: unknown;
 }>;
+export declare const deleteWorkout: import("@reduxjs/toolkit").AsyncThunk<string, string, {
+    rejectValue: string;
+    state?: unknown;
+    dispatch?: import("redux-thunk").ThunkDispatch<unknown, unknown, import("redux").UnknownAction> | undefined;
+    extra?: unknown;
+    serializedErrorType?: unknown;
+    pendingMeta?: unknown;
+    fulfilledMeta?: unknown;
+    rejectedMeta?: unknown;
+}>;
 declare const _default: import("redux").Reducer<WorkoutState, import("redux").UnknownAction, WorkoutState>;
 export default _default;

@@ -8,9 +8,13 @@ import Login from './components/Login';
 import Register from './components/Register';
 import WorkoutPage from './components/WorkoutPage';
 import styled from 'styled-components';
+import GlobalStyles from './GlobalStyles';
 
 const AppContainer = styled.div`
-  // Add your global styles here
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 `;
 
 const App: React.FC = () => {
@@ -27,6 +31,7 @@ const App: React.FC = () => {
   return (
     <AppContainer>
       <Router>
+        <GlobalStyles />
         <Routes>
           <Route path="/" element={isAuthenticated ? <Navigate to="/workouts" /> : <Login />} />
           <Route path="/register" element={<Register />} />

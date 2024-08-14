@@ -26,9 +26,8 @@ def create_app():
          allow_headers=["Authorization", "Content-Type"],
          supports_credentials=True)
 
-    from .routes import auth, workouts, chatbot
+    from .routes import auth, workouts
     app.register_blueprint(auth.bp)
     app.register_blueprint(workouts.bp)
-    app.register_blueprint(chatbot.bp)
 
     return app

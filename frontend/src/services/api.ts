@@ -32,7 +32,5 @@ export const getWorkouts = () => api.get('/workouts');
 export const addWorkout = (workoutData: { type: string; sets: number; reps: number; weight: number; date: string; bodyPart: string }) =>
   api.post('/workouts', workoutData);
 
-export const sendChatbotMessage = (message: string) =>
-  api.post('/chatbot', { message });
-
+export const deleteWorkout = (id: string) => api.delete(`/workouts/${id}`);
 export default api;

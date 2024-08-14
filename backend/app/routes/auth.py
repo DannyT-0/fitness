@@ -34,4 +34,6 @@ def login():
 def validate_token():
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
-    return jsonify(user={"username": user.username, "email": user.email}), 200
+    if user:
+        return jsonify(user={"username": user.username, "email": user.email}), 200
+    return jsonify({"msg": "User not found"}), 404

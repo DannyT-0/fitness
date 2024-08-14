@@ -11,9 +11,15 @@ const WorkoutFormContainer = styled.div `
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #FFB347; // Slightly darker orange for form
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+  }
 `;
 const GlobalStyle = createGlobalStyle `
   .react-datepicker-wrapper {
@@ -27,6 +33,7 @@ const GlobalStyle = createGlobalStyle `
     border-radius: 4px;
     margin-bottom: 10px;
     box-sizing: border-box;
+    background-color: #FFF0D4; // Light orange for input
   }
 `;
 const Title = styled.h2 `
@@ -43,6 +50,7 @@ const Input = styled.input `
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  background-color: #FFF0D4; // Light orange for input
 `;
 const Select = styled.select `
   margin-bottom: 10px;
@@ -50,18 +58,20 @@ const Select = styled.select `
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  background-color: #FFF0D4; // Light orange for select
 `;
 const Button = styled.button `
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #ffc107;
-  color: #333;
+  background-color: #FF8C00; // Dark orange for button
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #e0a800;
+    background-color: #FF7F00;
   }
 `;
 const bodyParts = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Core'];

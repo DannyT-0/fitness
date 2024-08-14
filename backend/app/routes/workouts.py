@@ -62,4 +62,51 @@ def create_workout():
         print(f"Error in create_workout: {str(e)}")
         return jsonify({"msg": "Error creating workout"}), 500
 
-# ... (keep the update and delete routes as they were)
+@bp.route('/workouts/<int:workout_id>', methods=['PUT'])
+@jwt_required()
+def update_workout(workout_id):
+    try:
+        user_id = get_jwt_identity()
+        workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
+        if not workout:
+            return jsonify({"msg": "Workout not found"}), 404
+
+        data = request.get_json()
+        workout.type = data.get('type', workout.type)
+        workout.sets = data.get('sets', workout.sets)
+        workout.reps = data.get('reps', workout.reps)
+        workout.weight = data.get('weight', workout.weight)
+        workout.date = datetime.fromisoformat(data.get('date', workout.date.isoformat()).replace('Z', '+00:00'))
+        workout.bodyPart = data.get('bodyPart', workout.bodyPart)
+
+        db.session.commit()
+        return jsonify({
+            'id': workout.id,
+            'type': workout.type,
+            'sets': workout.sets,
+            'reps': workout.reps,
+            'weight': workout.weight,
+            'date': workout.date.isoformat(),
+            'bodyPart': workout.bodyPart
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in update_workout: {str(e)}")
+        return jsonify({"msg": "Error updating workout"}), 500
+
+@bp.route('/workouts/<int:workout_id>', methods=['DELETE'])
+@jwt_required()
+def delete_workout(workout_id):
+    try:
+        user_id = get_jwt_identity()
+        workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
+        if not workout:
+            return jsonify({"msg": "Workout not found"}), 404
+
+        db.session.delete(workout)
+        db.session.commit()
+        return jsonify({"msg": "Workout deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in delete_workout: {str(e)}")
+        return jsonify({"msg": "Error deleting workout"}), 500

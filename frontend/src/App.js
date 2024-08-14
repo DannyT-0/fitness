@@ -7,8 +7,12 @@ import Login from './components/Login';
 import Register from './components/Register';
 import WorkoutPage from './components/WorkoutPage';
 import styled from 'styled-components';
+import GlobalStyles from './GlobalStyles';
 const AppContainer = styled.div `
-  // Add your global styles here
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 `;
 const App = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -19,6 +23,6 @@ const App = () => {
             dispatch(login({ token }));
         }
     }, [dispatch]);
-    return (_jsx(AppContainer, { children: _jsx(Router, { children: _jsxs(Routes, { children: [_jsx(Route, { path: "/", element: isAuthenticated ? _jsx(Navigate, { to: "/workouts" }) : _jsx(Login, {}) }), _jsx(Route, { path: "/register", element: _jsx(Register, {}) }), _jsx(Route, { path: "/workouts", element: isAuthenticated ? _jsx(WorkoutPage, {}) : _jsx(Navigate, { to: "/" }) })] }) }) }));
+    return (_jsx(AppContainer, { children: _jsxs(Router, { children: [_jsx(GlobalStyles, {}), _jsxs(Routes, { children: [_jsx(Route, { path: "/", element: isAuthenticated ? _jsx(Navigate, { to: "/workouts" }) : _jsx(Login, {}) }), _jsx(Route, { path: "/register", element: _jsx(Register, {}) }), _jsx(Route, { path: "/workouts", element: isAuthenticated ? _jsx(WorkoutPage, {}) : _jsx(Navigate, { to: "/" }) })] })] }) }));
 };
 export default App;

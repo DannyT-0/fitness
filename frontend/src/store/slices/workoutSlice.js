@@ -24,6 +24,18 @@ export const addWorkout = createAsyncThunk('workouts/addWorkout', async (workout
         return rejectWithValue('Unknown error occurred');
     }
 });
+export const deleteWorkout = createAsyncThunk('workouts/deleteWorkout', async (workoutId, { rejectWithValue }) => {
+    try {
+        await api.deleteWorkout(workoutId);
+        return workoutId;
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return rejectWithValue(error.message);
+        }
+        return rejectWithValue('Unknown error occurred');
+    }
+});
 const workoutSlice = createSlice({
     name: 'workouts',
     initialState: {
@@ -55,6 +67,18 @@ const workoutSlice = createSlice({
             state.status = 'succeeded';
         })
             .addCase(addWorkout.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload ?? 'Unknown error occurred';
+        })
+            .addCase(deleteWorkout.pending, (state) => {
+            state.status = 'loading';
+            state.error = null;
+        })
+            .addCase(deleteWorkout.fulfilled, (state, action) => {
+            state.workouts = state.workouts.filter(workout => workout.id !== action.payload);
+            state.status = 'succeeded';
+        })
+            .addCase(deleteWorkout.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.payload ?? 'Unknown error occurred';
         });

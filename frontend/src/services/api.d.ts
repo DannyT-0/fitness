@@ -18,5 +18,5 @@ export declare const addWorkout: (workoutData: {
     date: string;
     bodyPart: string;
 }) => Promise<import("axios").AxiosResponse<any, any>>;
-export declare const sendChatbotMessage: (message: string) => Promise<import("axios").AxiosResponse<any, any>>;
+export declare const deleteWorkout: (id: string) => Promise<import("axios").AxiosResponse<any, any>>;
 export default api;

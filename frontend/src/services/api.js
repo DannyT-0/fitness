@@ -19,5 +19,5 @@ export const register = (userData) => api.post('/register', userData);
 export const validateToken = () => api.post('/validate-token');
 export const getWorkouts = () => api.get('/workouts');
 export const addWorkout = (workoutData) => api.post('/workouts', workoutData);
-export const sendChatbotMessage = (message) => api.post('/chatbot', { message });
+export const deleteWorkout = (id) => api.delete(`/workouts/${id}`);
 export default api;
