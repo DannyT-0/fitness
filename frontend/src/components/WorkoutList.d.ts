@@ -2,10 +2,14 @@ import React from 'react';
 export interface Workout {
     id: string;
     type: string;
-    duration: number;
-    calories_burned: number;
+    sets: number;
+    reps: number;
+    weight: number;
     date: string;
     bodyPart: string;
 }
-declare const WorkoutList: React.FC;
+interface WorkoutListProps {
+    selectedDate: Date;
+}
+declare const WorkoutList: React.FC<WorkoutListProps>;
 export default WorkoutList;

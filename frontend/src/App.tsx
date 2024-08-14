@@ -6,9 +6,7 @@ import { login } from './store/slices/authSlice';
 import { AppDispatch } from './store';
 import Login from './components/Login';
 import Register from './components/Register';
-import WorkoutList from './components/WorkoutList';
-import WorkoutForm from './components/WorkoutForm';
-import Chatbot from './components/Chatbot';
+import WorkoutPage from './components/WorkoutPage';
 import styled from 'styled-components';
 
 const AppContainer = styled.div`
@@ -32,9 +30,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={isAuthenticated ? <Navigate to="/workouts" /> : <Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/workouts" element={isAuthenticated ? <WorkoutForm /> : <Navigate to="/" />} />
-          <Route path="/log-workout" element={isAuthenticated ? <WorkoutList /> : <Navigate to="/" />} />
-          <Route path="/chatbot" element={isAuthenticated ? <Chatbot /> : <Navigate to="/" />} />
+          <Route path="/workouts" element={isAuthenticated ? <WorkoutPage /> : <Navigate to="/" />} />
         </Routes>
       </Router>
     </AppContainer>

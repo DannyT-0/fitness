@@ -6,7 +6,19 @@ import styled, { createGlobalStyle } from 'styled-components';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 const useAppDispatch = () => useDispatch();
+const WorkoutFormContainer = styled.div `
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
 const GlobalStyle = createGlobalStyle `
+  .react-datepicker-wrapper {
+    width: 100%;
+  }
   .datepicker-input {
     width: 100%;
     padding: 10px;
@@ -14,15 +26,8 @@ const GlobalStyle = createGlobalStyle `
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
+    box-sizing: border-box;
   }
-`;
-const WorkoutFormContainer = styled.div `
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 const Title = styled.h2 `
   text-align: center;
@@ -61,41 +66,44 @@ const Button = styled.button `
 `;
 const bodyParts = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Core'];
 const exercises = {
-    Chest: ['Bench Press', 'Push-ups', 'Chest Flyes'],
-    Back: ['Pull-ups', 'Rows', 'Lat Pulldowns'],
-    Legs: ['Squats', 'Lunges', 'Leg Press'],
-    Arms: ['Bicep Curls', 'Tricep Extensions', 'Hammer Curls'],
-    Shoulders: ['Shoulder Press', 'Lateral Raises', 'Front Raises'],
-    Core: ['Crunches', 'Planks', 'Russian Twists']
+    Chest: ['Bench Press', 'Push-ups', 'Chest Flyes', 'Dips', 'Db bench press', 'Machine Press', 'Incline Bench Press', 'Decline Bench Press'],
+    Back: ['Pull-ups', 'Rows', 'Lat Pulldowns', 'Db Rows', 'Chin-ups', 'Deadlifts', 'Pull-overs', 'Cable Rows'],
+    Legs: ['Squats', 'Lunges', 'Leg Press', 'Leg Extensions', 'Db Squats', 'Calf Raises', 'Stiff-Legged Deadlifts', 'Leg Curls'],
+    Arms: ['Bicep Curls', 'Tricep Extensions', 'Hammer Curls', 'Tricep Dips', 'Cable Curls', 'Cable Tricep Extensions', 'Cable Curls', 'Cable Tricep Extensions'],
+    Shoulders: ['Shoulder Press', 'Lateral Raises', 'Front Raises', 'Side Raises', 'Cable Raises', 'Cable Front Raises', 'Cable Side Raises', 'Cable Lateral Raises'],
+    Core: ['Crunches', 'Planks', 'Russian Twists', 'Leg Raises', 'Cable Raises', 'Cable Planks', 'Cable Russian Twists', 'Cable Leg Raises']
 };
-const WorkoutForm = () => {
-    const [date, setDate] = useState(new Date());
+const WorkoutForm = ({ onWorkoutAdded, selectedDate, onDateChange }) => {
     const [bodyPart, setBodyPart] = useState('');
     const [exercise, setExercise] = useState('');
-    const [duration, setDuration] = useState('');
-    const [caloriesBurned, setCaloriesBurned] = useState('');
+    const [sets, setSets] = useState('');
+    const [reps, setReps] = useState('');
+    const [weight, setWeight] = useState('');
     const dispatch = useAppDispatch();
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (date && bodyPart && exercise) {
-            dispatch(addWorkout({
+        if (selectedDate && bodyPart && exercise) {
+            const workoutData = {
                 type: exercise,
-                duration: parseInt(duration),
-                calories_burned: parseInt(caloriesBurned),
-                date: date.toISOString(),
+                sets: parseInt(sets),
+                reps: parseInt(reps),
+                weight: parseInt(weight),
+                date: selectedDate.toISOString(),
                 bodyPart
-            }));
+            };
+            console.log("Sending workout data:", workoutData);
+            dispatch(addWorkout(workoutData));
+            onWorkoutAdded();
+            setBodyPart('');
+            setExercise('');
+            setSets('');
+            setReps('');
+            setWeight('');
         }
-        setDate(new Date());
-        setBodyPart('');
-        setExercise('');
-        setDuration('');
-        setCaloriesBurned('');
     };
-    return (_jsxs(WorkoutFormContainer, { children: [_jsx(GlobalStyle, {}), _jsx(Title, { children: "Log Workout" }), _jsxs(Form, { onSubmit: handleSubmit, children: [_jsx(DatePicker, { selected: date, onChange: (date) => setDate(date), dateFormat: "MMMM d, yyyy", className: "datepicker-input" }), date && (_jsxs(Select, { value: bodyPart, onChange: (e) => {
+    return (_jsxs(WorkoutFormContainer, { children: [_jsx(GlobalStyle, {}), _jsx(Title, { children: "Log Workout" }), _jsxs(Form, { onSubmit: handleSubmit, children: [_jsx(DatePicker, { selected: selectedDate, onChange: (date) => date && onDateChange(date), dateFormat: "MMMM d, yyyy", className: "datepicker-input" }), _jsxs(Select, { value: bodyPart, onChange: (e) => {
                             setBodyPart(e.target.value);
-                            console.log('Selected body part:', e.target.value); // Debugging line
                             setExercise('');
-                        }, children: [_jsx("option", { value: "", children: "Select Body Part" }), bodyParts.map((part) => (_jsx("option", { value: part, children: part }, part)))] })), bodyPart && (_jsxs(Select, { value: exercise, onChange: (e) => setExercise(e.target.value), children: [_jsx("option", { value: "", children: "Select Exercise" }), exercises[bodyPart].map((ex) => (_jsx("option", { value: ex, children: ex }, ex)))] })), _jsx(Input, { type: "number", value: duration, onChange: (e) => setDuration(e.target.value), placeholder: "Duration (minutes)" }), _jsx(Input, { type: "number", value: caloriesBurned, onChange: (e) => setCaloriesBurned(e.target.value), placeholder: "Calories Burned" }), _jsx(Button, { type: "submit", children: "Log Workout" })] })] }));
+                        }, children: [_jsx("option", { value: "", children: "Select Body Part" }), bodyParts.map((part) => (_jsx("option", { value: part, children: part }, part)))] }), bodyPart && (_jsxs(Select, { value: exercise, onChange: (e) => setExercise(e.target.value), children: [_jsx("option", { value: "", children: "Select Exercise" }), exercises[bodyPart].map((ex) => (_jsx("option", { value: ex, children: ex }, ex)))] })), _jsx(Input, { type: "number", value: sets, onChange: (e) => setSets(e.target.value), placeholder: "Sets" }), _jsx(Input, { type: "number", value: reps, onChange: (e) => setReps(e.target.value), placeholder: "Reps" }), _jsx(Input, { type: "number", value: weight, onChange: (e) => setWeight(e.target.value), placeholder: "Weight in Pounds" }), _jsx(Button, { type: "submit", children: "Log Workout" })] })] }));
 };
 export default WorkoutForm;

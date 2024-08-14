@@ -12,8 +12,11 @@ export declare const validateToken: () => Promise<import("axios").AxiosResponse<
 export declare const getWorkouts: () => Promise<import("axios").AxiosResponse<any, any>>;
 export declare const addWorkout: (workoutData: {
     type: string;
-    duration: number;
-    calories_burned: number;
+    sets: number;
+    reps: number;
+    weight: number;
+    date: string;
+    bodyPart: string;
 }) => Promise<import("axios").AxiosResponse<any, any>>;
 export declare const sendChatbotMessage: (message: string) => Promise<import("axios").AxiosResponse<any, any>>;
 export default api;

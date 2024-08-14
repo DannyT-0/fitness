@@ -32,22 +32,24 @@ const LoadingMessage = styled.div `
   margin-top: 20px;
 `;
 const useAppDispatch = () => useDispatch();
-const WorkoutList = () => {
+const WorkoutList = ({ selectedDate }) => {
     const dispatch = useAppDispatch();
     const workouts = useSelector((state) => state.workouts.workouts);
     const status = useSelector((state) => state.workouts.status);
     const error = useSelector((state) => state.workouts.error);
     useEffect(() => {
-        if (status === 'idle') {
-            dispatch(fetchWorkouts());
-        }
-    }, [status, dispatch]);
+        dispatch(fetchWorkouts());
+    }, [dispatch]);
     if (status === 'loading') {
         return _jsx(LoadingMessage, { children: "Loading workouts..." });
     }
     if (status === 'failed') {
         return _jsxs(ErrorMessage, { children: ["Error: ", error] });
     }
-    return (_jsxs(WorkoutListContainer, { children: [_jsx(Title, { children: "Your Workouts" }), workouts.length === 0 ? (_jsx("p", { children: "No workouts found. Start by adding a workout!" })) : (workouts.map((workout) => (_jsxs(WorkoutItem, { children: [_jsxs(WorkoutInfo, { children: ["Date: ", new Date(workout.date).toLocaleDateString()] }), _jsxs(WorkoutInfo, { children: ["Body Part: ", workout.bodyPart] }), _jsxs(WorkoutInfo, { children: ["Type: ", workout.type] }), _jsxs(WorkoutInfo, { children: ["Duration: ", workout.duration, " minutes"] }), _jsxs(WorkoutInfo, { children: ["Calories Burned: ", workout.calories_burned] })] }, workout.id))))] }));
+    const filteredWorkouts = workouts.filter((workout) => {
+        const workoutDate = new Date(workout.date);
+        return workoutDate.toDateString() === selectedDate.toDateString();
+    });
+    return (_jsxs(WorkoutListContainer, { children: [_jsxs(Title, { children: ["Your Workouts for ", selectedDate.toLocaleDateString()] }), filteredWorkouts.length === 0 ? (_jsx("p", { children: "No workouts found for this date. Start by adding a workout!" })) : (filteredWorkouts.map((workout) => (_jsxs(WorkoutItem, { children: [_jsxs(WorkoutInfo, { children: ["Body Part: ", workout.bodyPart] }), _jsxs(WorkoutInfo, { children: ["Type: ", workout.type] }), _jsxs(WorkoutInfo, { children: ["Sets: ", workout.sets] }), _jsxs(WorkoutInfo, { children: ["Reps: ", workout.reps] }), _jsxs(WorkoutInfo, { children: ["Weight: ", workout.weight] })] }, workout.id))))] }));
 };
 export default WorkoutList;

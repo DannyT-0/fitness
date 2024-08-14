@@ -8,7 +8,20 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const useAppDispatch = () => useDispatch<AppDispatch>();
 
+const WorkoutFormContainer = styled.div`
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
 const GlobalStyle = createGlobalStyle`
+  .react-datepicker-wrapper {
+    width: 100%;
+  }
   .datepicker-input {
     width: 100%;
     padding: 10px;
@@ -16,16 +29,8 @@ const GlobalStyle = createGlobalStyle`
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
+    box-sizing: border-box;
   }
-`;
-
-const WorkoutFormContainer = styled.div`
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h2`
@@ -71,38 +76,48 @@ const Button = styled.button`
 const bodyParts = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Core'];
 
 const exercises = {
-  Chest: ['Bench Press', 'Push-ups', 'Chest Flyes'],
-  Back: ['Pull-ups', 'Rows', 'Lat Pulldowns'],
-  Legs: ['Squats', 'Lunges', 'Leg Press'],
-  Arms: ['Bicep Curls', 'Tricep Extensions', 'Hammer Curls'],
-  Shoulders: ['Shoulder Press', 'Lateral Raises', 'Front Raises'],
-  Core: ['Crunches', 'Planks', 'Russian Twists']
+  Chest: ['Bench Press', 'Push-ups', 'Chest Flyes', 'Dips', 'Db bench press', 'Machine Press', 'Incline Bench Press', 'Decline Bench Press'],
+  Back: ['Pull-ups', 'Rows', 'Lat Pulldowns', 'Db Rows', 'Chin-ups','Deadlifts', 'Pull-overs', 'Cable Rows'],
+  Legs: ['Squats', 'Lunges', 'Leg Press','Leg Extensions', 'Db Squats', 'Calf Raises', 'Stiff-Legged Deadlifts', 'Leg Curls'],
+  Arms: ['Bicep Curls', 'Tricep Extensions', 'Hammer Curls', 'Tricep Dips', 'Cable Curls', 'Cable Tricep Extensions', 'Cable Curls', 'Cable Tricep Extensions'],
+  Shoulders: ['Shoulder Press', 'Lateral Raises', 'Front Raises', 'Side Raises', 'Cable Raises', 'Cable Front Raises', 'Cable Side Raises', 'Cable Lateral Raises'],
+  Core: ['Crunches', 'Planks', 'Russian Twists', 'Leg Raises', 'Cable Raises', 'Cable Planks', 'Cable Russian Twists', 'Cable Leg Raises']
 };
 
-const WorkoutForm: React.FC = () => {
-  const [date, setDate] = useState<Date | null>(new Date());
+interface WorkoutFormProps {
+  onWorkoutAdded: () => void;
+  selectedDate: Date;
+  onDateChange: (date: Date) => void;
+}
+
+const WorkoutForm: React.FC<WorkoutFormProps> = ({ onWorkoutAdded, selectedDate, onDateChange }) => {
   const [bodyPart, setBodyPart] = useState<string>('');
   const [exercise, setExercise] = useState<string>('');
-  const [duration, setDuration] = useState('');
-  const [caloriesBurned, setCaloriesBurned] = useState('');
+  const [sets, setSets] = useState('');
+  const [reps, setReps] = useState('');
+  const [weight, setWeight] = useState('');
   const dispatch = useAppDispatch();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (date && bodyPart && exercise) {
-      dispatch(addWorkout({ 
+    if (selectedDate && bodyPart && exercise) {
+      const workoutData = {
         type: exercise,
-        duration: parseInt(duration),
-        calories_burned: parseInt(caloriesBurned),
-        date: date.toISOString(),
+        sets: parseInt(sets),
+        reps: parseInt(reps),
+        weight: parseInt(weight),
+        date: selectedDate.toISOString(),
         bodyPart
-      }));
+      };
+      console.log("Sending workout data:", workoutData);
+      dispatch(addWorkout(workoutData));
+      onWorkoutAdded();
+      setBodyPart('');
+      setExercise('');
+      setSets('');
+      setReps('');
+      setWeight('');
     }
-    setDate(new Date());
-    setBodyPart('');
-    setExercise('');
-    setDuration('');
-    setCaloriesBurned('');
   };
 
   return (
@@ -111,26 +126,23 @@ const WorkoutForm: React.FC = () => {
       <Title>Log Workout</Title>
       <Form onSubmit={handleSubmit}>
         <DatePicker
-          selected={date}
-          onChange={(date: Date | null) => setDate(date)}
+          selected={selectedDate}
+          onChange={(date: Date | null) => date && onDateChange(date)}
           dateFormat="MMMM d, yyyy"
           className="datepicker-input"
         />
-        {date && (
-          <Select
-            value={bodyPart}
-            onChange={(e) => {
-              setBodyPart(e.target.value);
-              console.log('Selected body part:', e.target.value); // Debugging line
-              setExercise('');
-            }}
-          >
-            <option value="">Select Body Part</option>
-            {bodyParts.map((part) => (
-              <option key={part} value={part}>{part}</option>
-            ))}
-          </Select>
-        )}
+        <Select
+          value={bodyPart}
+          onChange={(e) => {
+            setBodyPart(e.target.value);
+            setExercise('');
+          }}
+        >
+          <option value="">Select Body Part</option>
+          {bodyParts.map((part) => (
+            <option key={part} value={part}>{part}</option>
+          ))}
+        </Select>
         {bodyPart && (
           <Select
             value={exercise}
@@ -144,15 +156,21 @@ const WorkoutForm: React.FC = () => {
         )}
         <Input
           type="number"
-          value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-          placeholder="Duration (minutes)"
+          value={sets}
+          onChange={(e) => setSets(e.target.value)}
+          placeholder="Sets"
         />
         <Input
           type="number"
-          value={caloriesBurned}
-          onChange={(e) => setCaloriesBurned(e.target.value)}
-          placeholder="Calories Burned"
+          value={reps}
+          onChange={(e) => setReps(e.target.value)}
+          placeholder="Reps"
+        />
+        <Input
+          type="number"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          placeholder="Weight in Pounds"
         />
         <Button type="submit">Log Workout</Button>
       </Form>

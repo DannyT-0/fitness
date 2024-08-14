@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.workout import Workout
 from app import db
+from datetime import datetime
 
 bp = Blueprint('workouts', __name__)
 
@@ -9,33 +10,56 @@ bp = Blueprint('workouts', __name__)
 @jwt_required()
 def get_workouts():
     try:
-        verify_jwt_in_request()
         user_id = get_jwt_identity()
         workouts = Workout.query.filter_by(user_id=user_id).all()
         return jsonify([{
             'id': w.id,
             'type': w.type,
-            'duration': w.duration,
-            'calories_burned': w.calories_burned,
-            'date': w.date.isoformat()
+            'sets': w.sets,
+            'reps': w.reps,
+            'weight': w.weight,
+            'date': w.date.isoformat(),
+            'bodyPart': w.bodyPart
         } for w in workouts]), 200
     except Exception as e:
         print(f"Error in get_workouts: {str(e)}")
         return jsonify({"msg": "Error fetching workouts"}), 500
 
-
 @bp.route('/workouts', methods=['POST'])
 @jwt_required()
 def create_workout():
-    user_id = get_jwt_identity()
-    data = request.get_json()
-    workout = Workout(user_id=user_id, **data)
-    db.session.add(workout)
-    db.session.commit()
-    return jsonify({
-        'id': workout.id,
-        'type': workout.type,
-        'duration': workout.duration,
-        'calories_burned': workout.calories_burned,
-        'date': workout.date.isoformat()
-    }), 201
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+        print(f"Received workout data: {data}")
+
+        workout = Workout(
+            user_id=user_id,
+            type=data['type'],
+            sets=data['sets'],
+            reps=data['reps'],
+            weight=data['weight'],
+            date=datetime.fromisoformat(data['date'].replace('Z', '+00:00')),
+            bodyPart=data['bodyPart']
+        )
+
+        db.session.add(workout)
+        db.session.commit()
+
+        print(f"Workout created with ID: {workout.id}")
+
+        return jsonify({
+            'id': workout.id,
+            'type': workout.type,
+            'sets': workout.sets,
+            'reps': workout.reps,
+            'weight': workout.weight,
+            'date': workout.date.isoformat(),
+            'bodyPart': workout.bodyPart
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in create_workout: {str(e)}")
+        return jsonify({"msg": "Error creating workout"}), 500
+
+# ... (keep the update and delete routes as they were)

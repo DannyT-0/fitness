@@ -29,7 +29,7 @@ export const validateToken = () =>
 
 export const getWorkouts = () => api.get('/workouts');
 
-export const addWorkout = (workoutData: { type: string; duration: number; calories_burned: number }) =>
+export const addWorkout = (workoutData: { type: string; sets: number; reps: number; weight: number; date: string; bodyPart: string }) =>
   api.post('/workouts', workoutData);
 
 export const sendChatbotMessage = (message: string) =>

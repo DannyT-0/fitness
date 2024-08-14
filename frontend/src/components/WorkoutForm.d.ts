@@ -1,4 +1,9 @@
 import React from 'react';
 import "react-datepicker/dist/react-datepicker.css";
-declare const WorkoutForm: React.FC;
+interface WorkoutFormProps {
+    onWorkoutAdded: () => void;
+    selectedDate: Date;
+    onDateChange: (date: Date) => void;
+}
+declare const WorkoutForm: React.FC<WorkoutFormProps>;
 export default WorkoutForm;
