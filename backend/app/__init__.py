@@ -27,6 +27,13 @@ def create_app():
          methods=["GET", "POST", "OPTIONS", "PUT", "DELETE"], 
          allow_headers=["Authorization", "Content-Type"],
          supports_credentials=True)
+    
+    @app.route('/health', methods=['GET'])
+    def health_check():
+     return "Healthy", 200
+
+    
+    
 
     from .routes import auth, workouts
     app.register_blueprint(auth.bp)
