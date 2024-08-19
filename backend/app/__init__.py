@@ -21,7 +21,9 @@ def create_app():
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    CORS(app, origins=["http://localhost:5173"], 
+
+    # Update CORS configuration to be more flexible
+    CORS(app, origins=os.environ.get('CORS_ORIGINS', 'http://localhost:5173').split(','), 
          methods=["GET", "POST", "OPTIONS", "PUT", "DELETE"], 
          allow_headers=["Authorization", "Content-Type"],
          supports_credentials=True)
@@ -31,3 +33,9 @@ def create_app():
     app.register_blueprint(workouts.bp)
 
     return app
+
+# This block is not necessary when using Gunicorn, but can be helpful for local development
+if __name__ == '__main__':
+    app = create_app()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
