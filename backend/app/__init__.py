@@ -34,7 +34,7 @@ def create_app():
 
     return app
 
-# This block is not necessary when using Gunicorn, but can be helpful for local development
+# This block is not necessary when using Gunicorn, but can be helpful for local development. Going to leave this in just in case.
 if __name__ == '__main__':
     app = create_app()
     port = int(os.environ.get('PORT', 5000))
