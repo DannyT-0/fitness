@@ -16,24 +16,22 @@ migrate = Migrate()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
+    app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'your-default-secret-key')
 
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
 
     # Update CORS configuration to be more flexible
-    CORS(app, origins=os.environ.get('CORS_ORIGINS', 'http://localhost:5173').split(','), 
+    cors_origins = os.environ.get('CORS_ORIGINS', 'http://localhost:5173').split(',')
+    CORS(app, origins=cors_origins, 
          methods=["GET", "POST", "OPTIONS", "PUT", "DELETE"], 
          allow_headers=["Authorization", "Content-Type"],
          supports_credentials=True)
     
     @app.route('/health', methods=['GET'])
     def health_check():
-     return "Healthy", 200
-
-    
-    
+        return "Healthy", 200
 
     from .routes import auth, workouts
     app.register_blueprint(auth.bp)
@@ -41,8 +39,8 @@ def create_app():
 
     return app
 
-# This block is not necessary when using Gunicorn, but can be helpful for local development. Going to leave this in just in case.
+# This block is not necessary when using Gunicorn, but can be helpful for local development.
 if __name__ == '__main__':
     app = create_app()
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 8080))  # Default to 8080 for deployment
     app.run(host='0.0.0.0', port=port)
